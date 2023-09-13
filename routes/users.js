@@ -28,12 +28,14 @@ usersRouter.patch("/cards", authMW, async (req, res) => {
 });
 
 usersRouter.get("/me", authMW, async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password -__v");
+  const user = await User.findById(req.user._id).select(
+    "-password -__v -name._id -image -name.middle -_id"
+  );
   res.json(user);
 });
 
 usersRouter.post("/", async (req, res) => {
-  //validate users input
+  //validate user input
   const { error } = validateUser(req.body);
   if (error) {
     res.status(400).json(error.details[0].message);
@@ -92,6 +94,7 @@ usersRouter.delete("/deleteAll", async (req, res) => {
 usersRouter.get("/test", (req, res) => {
   res.json("Work");
 });
+//
 function validate(user) {
   const schema = Joi.object({
     email: Joi.string().min(6).max(255).required().email(),

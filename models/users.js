@@ -164,6 +164,7 @@ function validateUser(user) {
       zip: Joi.string().min(0).max(12),
     }).required(),
     isBusiness: Joi.boolean().required(),
+    isAdmin: Joi.boolean().required(),
   });
 
   return schema.validate(user);
