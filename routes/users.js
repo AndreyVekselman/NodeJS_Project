@@ -2,11 +2,13 @@ const usersRouter = require("express").Router();
 
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
+const Joi = require("joi");
 
 const { User, validateUser, validateCards } = require("../models/users");
 
 const authMW = require("../middlware/authMW");
 const { Card } = require("../models/cards");
+const chalk = require("chalk");
 
 usersRouter.patch("/cards", authMW, async (req, res) => {
   const { error } = validateCards(req.body);
@@ -37,21 +39,65 @@ usersRouter.post("/", async (req, res) => {
     res.status(400).json(error.details[0].message);
     return;
   }
-
   //validate system
   let user = await User.findOne({ email: req.body.email });
   if (user) {
     res.status(400).send("User already registered");
     return;
   }
-
   //process
   user = new User(req.body);
   user.password = await bcrypt.hash(user.password, 12);
-  await user.save();
 
-  //reuslts
-  res.json(_.pick(user, ["_id", "name", "email", "biz"]));
+  await user.save();
+  //results
+  //res.json(_.pick(user, ["_id", "name", "email", "biz"]));
+  res.json(user);
 });
 
+usersRouter.post("/login", async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) {
+    res.status(400).json(error.details[0].message);
+    return;
+  }
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    res.status(400).send("Invalid email !!");
+    return;
+  }
+
+  const isPasswordValid = await bcrypt.compare(
+    req.body.password,
+    user.password
+  );
+
+  if (!isPasswordValid) {
+    res.status(400).send("Invalid !! password");
+    return;
+  }
+  //process
+  const token = user.generateAuthToken();
+
+  //response
+  res.send({ token });
+});
+// My Games
+usersRouter.delete("/deleteAll", async (req, res) => {
+  await User.deleteMany();
+  console.log(chalk.yellow("All users are deleted"));
+  res.json("All users are deleted");
+});
+
+usersRouter.get("/test", (req, res) => {
+  res.json("Work");
+});
+function validate(user) {
+  const schema = Joi.object({
+    email: Joi.string().min(6).max(255).required().email(),
+    password: Joi.string().min(6).max(1024).required(),
+  });
+
+  return schema.validate(user);
+}
 module.exports = usersRouter;

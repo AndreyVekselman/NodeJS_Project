@@ -16,8 +16,6 @@ const app = express();
 
 const usersRouter = require("./routes/users");
 
-const authRouter = require("./routes/auth");
-
 const cardsRouter = require("./routes/cards");
 
 mongoose
@@ -40,7 +38,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/users", usersRouter);
-app.use("/auth", authRouter);
 app.use("/cards", cardsRouter);
 app.use(express.static("public"));
 app.all("*", (req, res) => {
