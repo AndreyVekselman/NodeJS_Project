@@ -28,8 +28,10 @@ mongoose
   );
 
 app.use(
-  morgan(chalk.yellow(
-    `DATE: :date[web] ; METHOD: :method ; URL: :url ; STATUS: :status ; RESPONSE TIME: :response-time ms`)
+  morgan(
+    chalk.yellow(
+      `DATE: :date[web] ; METHOD: :method ; URL: :url ; STATUS: :status ; RESPONSE TIME: :response-time ms`
+    )
   )
 );
 
@@ -40,6 +42,10 @@ app.use(express.json());
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.use("/cards", cardsRouter);
+app.use(express.static("public"));
+app.all("*", (req, res) => {
+  res.status(404).send("404: Page not found");
+});
 
 const PORT = config.get("server.PORT");
 app.listen(PORT, () => console.log(chalk.blue(`listening on port ${PORT}`)));

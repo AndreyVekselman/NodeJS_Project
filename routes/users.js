@@ -5,7 +5,7 @@ const _ = require("lodash");
 
 const { User, validateUser, validateCards } = require("../models/users");
 
-const authMW = require("../middelware/authMW");
+const authMW = require("../middlware/authMW");
 const { Card } = require("../models/cards");
 
 usersRouter.patch("/cards", authMW, async (req, res) => {

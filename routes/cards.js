@@ -1,7 +1,7 @@
 const cardsRouter = require("express").Router();
 const _ = require("lodash");
 const { Card, validateCard, generateBizNumber } = require("../models/cards");
-const authMW = require("../middelware/authMW");
+const authMW = require("../middlware/authMW");
 
 cardsRouter.get("/test", async (req, res) => {
   res.json("hello");
