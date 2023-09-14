@@ -27,6 +27,8 @@ const chalk = require("chalk");
 //   res.json(user);
 // });
 
+//Get user information
+
 // usersRouter.get("/me", authMW, async (req, res) => {
 //   const user = await User.findById(req.user._id).select(
 //     "-password -__v -name._id -image -name.middle -_id"
@@ -93,11 +95,10 @@ usersRouter.post("/login", async (req, res) => {
 usersRouter.get("/", authMW("isAdmin"), async (req, res) => {
   try {
     const allUsers = await User.find();
-   res.send(allUsers);
-  } catch (err){
-    res.status(401).send(err.message)
+    res.send(allUsers);
+  } catch (err) {
+    res.status(401).send(err.message);
   }
-  
 });
 
 // My Games
