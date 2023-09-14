@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const Joi = require("joi");
 
-const { User, validateUser, validateCards } = require("../models/users");
+const { User, validateUser } = require("../models/users");
 
 const authMW = require("../middlware/authMW");
-const { Card } = require("../models/cards");
+// const { Card } = require("../models/cards");
 const chalk = require("chalk");
 
 // usersRouter.patch("/cards", authMW, async (req, res) => {
@@ -27,17 +27,7 @@ const chalk = require("chalk");
 //   res.json(user);
 // });
 
-//Get user information
-
-// usersRouter.get("/me", authMW, async (req, res) => {
-//   const user = await User.findById(req.user._id).select(
-//     "-password -__v -name._id -image -name.middle -_id"
-//   );
-//   res.json(user);
-// });
-
 // ----Create user
-
 usersRouter.post("/", async (req, res) => {
   //validate user input
   const { error } = validateUser(req.body);
@@ -62,7 +52,6 @@ usersRouter.post("/", async (req, res) => {
 });
 
 //Login User
-
 usersRouter.post("/login", async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
@@ -98,7 +87,46 @@ usersRouter.get("/", authMW("isAdmin"), async (req, res) => {
     res.send(allUsers);
   } catch (err) {
     res.status(401).send(err.message);
+    return;
   }
+});
+
+//Get User informaion by ID
+usersRouter.get("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id }).select(
+      "-password -__v"
+    );
+    res.json(user);
+  } catch (err) {
+    res.statusMessage = "User was not found.";
+    res.status(401).send("User was not found.");
+    return;
+  }
+});
+
+//Edit user
+usersRouter.put("/:id", authMW("userOwner"), async (req, res) => {
+  //validate user input
+  const { error } = validateUser(req.body);
+  if (error) {
+    res.status(400).json(error.details[0].message);
+    return;
+  }
+  //validate system
+  let user = await User.findOne({
+    email: req.body.email,
+    _id: { $ne: req.user._id },
+  });
+  if (user) {
+    res.status(401).send("Email all ready exist");
+    return;
+  }
+  //process
+  user = new User.findOneAndUpdate({ _id: req.params.id }, { ...req.body });
+
+  await user.save();
+  res.json(user);
 });
 
 // My Games
