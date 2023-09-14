@@ -10,29 +10,31 @@ const authMW = require("../middlware/authMW");
 const { Card } = require("../models/cards");
 const chalk = require("chalk");
 
-usersRouter.patch("/cards", authMW, async (req, res) => {
-  const { error } = validateCards(req.body);
-  if (error) {
-    res.status(400).json(error.details[0].message);
-  }
-  const cards = await Card.find({ bizNumber: { $in: req.body.cards } });
-  if (cards.length != req.body.cards.length) {
-    res.status(400).send("at least some of numbers were not found");
-    return;
-  }
+// usersRouter.patch("/cards", authMW, async (req, res) => {
+//   const { error } = validateCards(req.body);
+//   if (error) {
+//     res.status(400).json(error.details[0].message);
+//   }
+//   const cards = await Card.find({ bizNumber: { $in: req.body.cards } });
+//   if (cards.length != req.body.cards.length) {
+//     res.status(400).send("at least some of numbers were not found");
+//     return;
+//   }
 
-  const user = await User.findById(req.user._id);
-  user.cards = [...new Set([...user.cards, ...req.body.cards])];
-  await user.save();
-  res.json(user);
-});
+//   const user = await User.findById(req.user._id);
+//   user.cards = [...new Set([...user.cards, ...req.body.cards])];
+//   await user.save();
+//   res.json(user);
+// });
 
-usersRouter.get("/me", authMW, async (req, res) => {
-  const user = await User.findById(req.user._id).select(
-    "-password -__v -name._id -image -name.middle -_id"
-  );
-  res.json(user);
-});
+// usersRouter.get("/me", authMW, async (req, res) => {
+//   const user = await User.findById(req.user._id).select(
+//     "-password -__v -name._id -image -name.middle -_id"
+//   );
+//   res.json(user);
+// });
+
+// ----Create user
 
 usersRouter.post("/", async (req, res) => {
   //validate user input
@@ -56,6 +58,8 @@ usersRouter.post("/", async (req, res) => {
   //res.json(_.pick(user, ["_id", "name", "email", "biz"]));
   res.json(user);
 });
+
+//Login User
 
 usersRouter.post("/login", async (req, res) => {
   const { error } = validate(req.body);
@@ -84,6 +88,18 @@ usersRouter.post("/login", async (req, res) => {
   //response
   res.send({ token });
 });
+
+//Get all users
+usersRouter.get("/", authMW("isAdmin"), async (req, res) => {
+  try {
+    const allUsers = await User.find();
+   res.send(allUsers);
+  } catch (err){
+    res.status(401).send(err.message)
+  }
+  
+});
+
 // My Games
 usersRouter.delete("/deleteAll", async (req, res) => {
   await User.deleteMany();

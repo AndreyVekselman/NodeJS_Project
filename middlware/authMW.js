@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const { Card } = require("../models/cardsModel");
+const { Card } = require("../models/cards");
 
 function authMW(...roles) {
   return async (req, res, next) => {
