@@ -142,6 +142,14 @@ usersRouter.patch("/:id", authMW("userOwner"), async (req, res) => {
   res.json(_.pick(user, ["id", "name", "email", "isBusiness"]));
 });
 
+usersRouter.delete("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
+  console.log(req.params._id);
+  let user = await User.findOne(req.params._id);
+  console.log(user.id);
+  // user = await User.deleteOne(req.params._id);
+  res.json(" user Deleted");
+});
+
 // My Games
 usersRouter.delete("/deleteAll", async (req, res) => {
   await User.deleteMany();
