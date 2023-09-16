@@ -9,6 +9,7 @@ const { User, validateUser } = require("../models/users");
 const authMW = require("../middlware/authMW");
 // const { Card } = require("../models/cards");
 const chalk = require("chalk");
+const { trusted } = require("mongoose");
 
 // usersRouter.patch("/cards", authMW, async (req, res) => {
 //   const { error } = validateCards(req.body);
@@ -81,13 +82,8 @@ usersRouter.post("/login", async (req, res) => {
 
 //Get all users
 usersRouter.get("/", authMW("isAdmin"), async (req, res) => {
-  try {
-    const allUsers = await User.find();
-    res.send(allUsers);
-  } catch (err) {
-    res.status(401).send(err.message);
-    return;
-  }
+  allUsers = await User.find();
+  res.send(allUsers);
 });
 
 //Get User informaion by ID
@@ -96,7 +92,7 @@ usersRouter.get("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
     "-password -__v"
   );
 
-    res.json(user);
+  res.json(user);
 });
 
 //Edit user
@@ -117,10 +113,33 @@ usersRouter.put("/:id", authMW("userOwner"), async (req, res) => {
     return;
   }
   //process
-  user = new User.findOneAndUpdate({ _id: req.params.id }, { ...req.body });
+  user = await User.findOneAndUpdate(
+    { _id: req.params.id },
+    { ...req.body },
+    { new: true }
+  );
+  //response
+  res.json(
+    _.pick(user, ["_id", "name", "email", "isBusiness", "isAdmin", "address"])
+  );
+});
 
+//Change a business status
+usersRouter.patch("/:id", authMW("userOwner"), async (req, res) => {
+  let user = await User.findOne({
+    email: req.body.email,
+    _id: { $ne: req.user._id },
+  });
+  if (user) {
+    res.status(401).send("wrong user parameters");
+    return;
+  }
+  //process
+  user = await User.findOne(req.params._id);
+  user.isBusiness = !user.isBusiness;
+  //response
   await user.save();
-  res.json(user);
+  res.json(_.pick(user, ["id", "name", "email", "isBusiness"]));
 });
 
 // My Games
