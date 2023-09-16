@@ -39,7 +39,7 @@ usersRouter.post("/", async (req, res) => {
   //validate system
   let user = await User.findOne({ email: req.body.email });
   if (user) {
-    res.status(400).send("User already registered");
+    res.status(400).json({ message: "User already registered" });
     return;
   }
   //process
@@ -48,7 +48,7 @@ usersRouter.post("/", async (req, res) => {
 
   await user.save();
   //results
-  res.json(_.pick(user, ["_id", "name", "email", "biz", "address"]));
+  res.json(_.pick(user, ["_id", "name", "email", "address"]));
 });
 
 //Login User
@@ -60,7 +60,7 @@ usersRouter.post("/login", async (req, res) => {
   }
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    res.status(400).send("Invalid email !!");
+    res.status(400).json({ message: "Invalid email or password!!" });
     return;
   }
 
@@ -70,14 +70,14 @@ usersRouter.post("/login", async (req, res) => {
   );
 
   if (!isPasswordValid) {
-    res.status(400).send("Invalid !! password");
+    res.status(400).json({ message: "Invalid email or password!!" });
     return;
   }
   //process
   const token = user.generateAuthToken();
 
   //response
-  res.send({ token });
+  res.json(token);
 });
 
 //Get all users
@@ -91,7 +91,10 @@ usersRouter.get("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
   const user = await User.findOne({ _id: req.params.id }).select(
     "-password -__v"
   );
-
+  if (!user) {
+    res.status(401).json({ message: "user Not found" });
+    return;
+  }
   res.json(user);
 });
 
@@ -109,7 +112,7 @@ usersRouter.put("/:id", authMW("userOwner"), async (req, res) => {
     _id: { $ne: req.user._id },
   });
   if (user) {
-    res.status(401).send("Email all ready exist");
+    res.status(401).json({ message: "This Email all ready in use" });
     return;
   }
   //process
@@ -119,6 +122,10 @@ usersRouter.put("/:id", authMW("userOwner"), async (req, res) => {
     { new: true }
   );
   //response
+  if (!user) {
+    res.status(401).json({ message: "user Not found" });
+    return;
+  }
   res.json(
     _.pick(user, ["_id", "name", "email", "isBusiness", "isAdmin", "address"])
   );
@@ -131,23 +138,29 @@ usersRouter.patch("/:id", authMW("userOwner"), async (req, res) => {
     _id: { $ne: req.user._id },
   });
   if (user) {
-    res.status(401).send("wrong user parameters");
+    res.status(401).json({ message: "wrong user parameters" });
     return;
   }
   //process
-  user = await User.findOne(req.params._id);
+  user = await User.findOne({ _id: req.params.id });
+  if (!user) {
+    res.status(401).json({ message: "user Not found" });
+    return;
+  }
   user.isBusiness = !user.isBusiness;
   //response
   await user.save();
   res.json(_.pick(user, ["id", "name", "email", "isBusiness"]));
 });
 
+//Delete User by ID
 usersRouter.delete("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
-  console.log(req.params._id);
-  let user = await User.findOne(req.params._id);
-  console.log(user.id);
-  // user = await User.deleteOne(req.params._id);
-  res.json(" user Deleted");
+  const user = await User.findOneAndRemove({ _id: req.params.id });
+  if (!user) {
+    res.status(401).json({ message: "user Not found" });
+    return;
+  }
+  res.json(user);
 });
 
 // My Games
@@ -159,7 +172,7 @@ usersRouter.delete("/deleteAll", async (req, res) => {
 
 // server test
 usersRouter.get("/test/test", (req, res) => {
-  res.json("Work -test from users Route");
+  res.json({ message: "Work -test from users Route" });
 });
 
 //
