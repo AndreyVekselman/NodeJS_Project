@@ -4,7 +4,7 @@ const { Card, validateCard, generateBizNumber } = require("../models/cards");
 const authMW = require("../middlware/authMW");
 
 cardsRouter.get("/test", async (req, res) => {
-  res.json("hello");
+  res.json({ message: "hello from cards route" });
 });
 
 cardsRouter.post("/", authMW, async (req, res) => {
