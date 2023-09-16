@@ -136,9 +136,11 @@ usersRouter.delete("/deleteAll", async (req, res) => {
   res.json("All users are deleted");
 });
 
-usersRouter.get("/test", (req, res) => {
-  res.json("Work");
+// server test
+usersRouter.get("/test/test", (req, res) => {
+  res.json("Work -test from users Route");
 });
+
 //
 function validate(user) {
   const schema = Joi.object({
