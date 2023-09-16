@@ -47,8 +47,7 @@ usersRouter.post("/", async (req, res) => {
 
   await user.save();
   //results
-  //res.json(_.pick(user, ["_id", "name", "email", "biz"]));
-  res.json(user);
+  res.json(_.pick(user, ["_id", "name", "email", "biz", "address"]));
 });
 
 //Login User
@@ -93,16 +92,11 @@ usersRouter.get("/", authMW("isAdmin"), async (req, res) => {
 
 //Get User informaion by ID
 usersRouter.get("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.params.id }).select(
-      "-password -__v"
-    );
+  const user = await User.findOne({ _id: req.params.id }).select(
+    "-password -__v"
+  );
+
     res.json(user);
-  } catch (err) {
-    res.statusMessage = "User was not found.";
-    res.status(401).send("User was not found.");
-    return;
-  }
 });
 
 //Edit user
