@@ -7,26 +7,8 @@ const Joi = require("joi");
 const { User, validateUser } = require("../models/users");
 
 const authMW = require("../middlware/authMW");
-// const { Card } = require("../models/cards");
 const chalk = require("chalk");
 const { trusted } = require("mongoose");
-
-// usersRouter.patch("/cards", authMW, async (req, res) => {
-//   const { error } = validateCards(req.body);
-//   if (error) {
-//     res.status(400).json(error.details[0].message);
-//   }
-//   const cards = await Card.find({ bizNumber: { $in: req.body.cards } });
-//   if (cards.length != req.body.cards.length) {
-//     res.status(400).send("at least some of numbers were not found");
-//     return;
-//   }
-
-//   const user = await User.findById(req.user._id);
-//   user.cards = [...new Set([...user.cards, ...req.body.cards])];
-//   await user.save();
-//   res.json(user);
-// });
 
 // ----Create user
 usersRouter.post("/", async (req, res) => {

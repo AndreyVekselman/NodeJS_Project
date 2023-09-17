@@ -30,7 +30,6 @@ cardsRouter.get("/", async (req, res) => {
 cardsRouter.post("/", authMW("isBusiness"), async (req, res) => {
   //validate card input//
   const { error } = validateCard(req.body);
-
   if (error) {
     res.status(401).json(error.details[0].message);
     return;
@@ -106,6 +105,19 @@ cardsRouter.put("/:id", authMW(), async (req, res) => {
   } catch (err) {
     res.status(401).json({ message: err.message });
   }
+});
+
+//Add favorit cards
+cardsRouter.patch("/:id", authMW(), async (req, res) => {
+  let card = await Card.find({
+    _id: req.params.id,
+  });
+  if (!card.length) {
+    res.status(401).json({ message: "card not found" });
+    return;
+  }
+  // card.likes = [...new Set([...card.likes, req.user._id])];
+  res.json({ message: "test" });
 });
 
 //DELETE card by id
