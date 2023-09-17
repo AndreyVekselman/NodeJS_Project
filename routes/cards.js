@@ -109,15 +109,16 @@ cardsRouter.put("/:id", authMW(), async (req, res) => {
 
 //Add favorit cards
 cardsRouter.patch("/:id", authMW(), async (req, res) => {
-  let card = await Card.find({
+  let card = await Card.findOne({
     _id: req.params.id,
   });
-  if (!card.length) {
+  if (!card) {
     res.status(401).json({ message: "card not found" });
     return;
   }
-  // card.likes = [...new Set([...card.likes, req.user._id])];
-  res.json({ message: "test" });
+  card.likes.push(req.user._id);
+  await card.save();
+  res.json(card);
 });
 
 //DELETE card by id
