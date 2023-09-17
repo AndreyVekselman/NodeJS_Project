@@ -109,24 +109,28 @@ cardsRouter.put("/:id", authMW(), async (req, res) => {
 
 //Add favorit cards
 cardsRouter.patch("/:id", authMW(), async (req, res) => {
-  let card = await Card.findOne({
-    _id: req.params.id,
-  });
-  if (!card) {
-    res.status(401).json({ message: "card not found" });
-    return;
-  }
-  let allReadyLiked = false;
-  card.likes.forEach((e) => {
-    if (e._id == req.user._id) {
-      allReadyLiked = true;
+  try {
+    let card = await Card.findOne({
+      _id: req.params.id,
+    });
+    if (!card) {
+      res.status(401).json({ message: "card not found" });
+      return;
     }
-  });
-  if (!allReadyLiked) {
-    card.likes.push(req.user._id);
-    await card.save();
+    let allReadyLiked = false;
+    card.likes.forEach((e) => {
+      if (e._id == req.user._id) {
+        allReadyLiked = true;
+      }
+    });
+    if (!allReadyLiked) {
+      card.likes.push(req.user._id);
+      await card.save();
+    }
+    res.json(card);
+  } catch (err) {
+    res.status(401).json({ message: err.message });
   }
-  res.json(card);
 });
 
 //DELETE card by id
