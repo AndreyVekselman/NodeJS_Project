@@ -32,7 +32,7 @@ cardsRouter.post("/", authMW("isBusiness"), async (req, res) => {
   const { error } = validateCard(req.body);
 
   if (error) {
-    res.status(400).json(error.details[0].message);
+    res.status(401).json(error.details[0].message);
     return;
   }
 
@@ -63,64 +63,68 @@ cardsRouter.get("/my-cards", authMW(), async (req, res) => {
 
 // Get Card by ID
 cardsRouter.get("/:id", async (req, res) => {
-  const card = await Card.findOne({
-    _id: req.params.id,
-  });
-  if (!card) {
-    res.status(401).json({ message: "card no found" });
+  try {
+    const card = await Card.findOne({
+      _id: req.params.id,
+    });
+    if (!card) {
+      res.status(401).json({ message: "card no found" });
+      return;
+    }
+    res.json(card);
+  } catch (err) {
+    res.status(401).json({ message: err.message });
     return;
   }
-  res.json(card);
 });
 
-//--------
-cardsRouter.put("/:id", authMW, async (req, res) => {
+//Update Existing Card by creater
+cardsRouter.put("/:id", authMW(), async (req, res) => {
   const { error } = validateCard(req.body);
-
   if (error) {
-    res.status(400).json(error.details[0].message);
+    res.status(401).json(error.details[0].message);
     return;
   }
+  try {
+    const card = await Card.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        user_id: req.user._id,
+      },
+      req.body,
+      {
+        new: true,
+      }
+    );
+    if (!card) {
+      res
+        .status(401)
+        .json({ message: "the card with the given ID was not found" });
+      return;
+    }
+    res.json(card);
+  } catch (err) {
+    res.status(401).json({ message: err.message });
+  }
+});
 
-  const card = await Card.findOneAndUpdate(
-    {
+//DELETE card by id
+cardsRouter.delete("/:id", authMW(), async (req, res) => {
+  try {
+    const card = await Card.findOneAndDelete({
       _id: req.params.id,
       user_id: req.user._id,
-    },
-    req.body,
-    {
-      new: true,
+    });
+    if (!card) {
+      res
+        .status(404)
+        .json({ message: "the card with the given ID was not found" });
+      return;
     }
-  );
-  if (!card) {
-    res.status(404).send("the card with the given ID was not found");
-    return;
+    res.json(card);
+  } catch (err) {
+    res.status(401).json({ message: err.message });
   }
-  res.json(card);
-});
-
-cardsRouter.delete("/:id", authMW, async (req, res) => {
-  const card = await Card.findByIdAndDelete({
-    _id: req.params.id,
-    user_id: req.user._id,
-  });
-  if (!card) {
-    res.status(404).send("the card with the given ID was not found");
-    return;
-  }
-  res.json(card);
-});
-
-cardsRouter.get("/:id", authMW, async (req, res) => {
-  const card = await Card.findOne({
-    _id: req.params.id,
-    user_id: req.user._id,
-  });
-  if (!card) {
-    res.status(404).send("the card with the given ID was not found");
-    return;
-  }
-  res.json(card);
 });
 
 module.exports = cardsRouter;
