@@ -20,7 +20,7 @@ cardsRouter.delete("/deleteAll", async (req, res) => {
 cardsRouter.get("/", async (req, res) => {
   const allCards = await Card.find();
   if (!allCards.length) {
-    res.json({ message: "no cards found" });
+    res.status(401).json({ message: "no cards found" });
     return;
   }
   res.json(allCards);
@@ -55,10 +55,22 @@ cardsRouter.get("/my-cards", authMW(), async (req, res) => {
     user_id: req.user._id,
   });
   if (!userCards.length) {
-    res.json({ message: "user has no a cards" });
+    res.status(401).json({ message: "user has no a cards" });
     return;
   }
   res.json(userCards);
+});
+
+// Get Card by ID
+cardsRouter.get("/:id", async (req, res) => {
+  const card = await Card.findOne({
+    _id: req.params.id,
+  });
+  if (!card) {
+    res.status(401).json({ message: "card no found" });
+    return;
+  }
+  res.json(card);
 });
 
 //--------
