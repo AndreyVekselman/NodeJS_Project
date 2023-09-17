@@ -12,7 +12,7 @@ cardsRouter.get("/test", async (req, res) => {
 //Delete All Cards
 cardsRouter.delete("/deleteAll", async (req, res) => {
   await Card.deleteMany();
-  console.log(chalk.yellow("All cards are deleted"));
+  console.log(chalk.red("All cards are deleted"));
   res.json({ message: "All cards are deleted" });
 });
 
@@ -35,20 +35,17 @@ cardsRouter.post("/", authMW(), async (req, res) => {
     res.status(400).json(error.details[0].message);
     return;
   }
-  //process//
 
+  //process//
   const card = new Card({
     ...req.body,
-    bizImage:
-      req.body.bizImage ||
-      "https://images.pexels.com/photos/13221803/pexels-photo-13221803.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     bizNumber: await generateBizNumber(),
     user_id: req.user._id,
   });
 
   await card.save();
 
-  //results//
+  //response//
   res.json(card);
 });
 
