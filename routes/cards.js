@@ -18,7 +18,7 @@ cardsRouter.delete("/deleteAll", async (req, res) => {
 
 //Get ALl Cards
 cardsRouter.get("/", async (req, res) => {
-  allCards = await Card.find();
+  const allCards = await Card.find();
   if (!allCards.length) {
     res.json({ message: "no cards found" });
     return;
@@ -26,8 +26,8 @@ cardsRouter.get("/", async (req, res) => {
   res.json(allCards);
 });
 
-//create new Card
-cardsRouter.post("/", authMW(), async (req, res) => {
+//Create a new Card
+cardsRouter.post("/", authMW("isBusiness"), async (req, res) => {
   //validate card input//
   const { error } = validateCard(req.body);
 
@@ -49,6 +49,19 @@ cardsRouter.post("/", authMW(), async (req, res) => {
   res.json(card);
 });
 
+//Get user Cards
+cardsRouter.get("/my-cards", authMW(), async (req, res) => {
+  const userCards = await Card.find({
+    user_id: req.user._id,
+  });
+  if (!userCards.length) {
+    res.json({ message: "user has no a cards" });
+    return;
+  }
+  res.json(userCards);
+});
+
+//--------
 cardsRouter.put("/:id", authMW, async (req, res) => {
   const { error } = validateCard(req.body);
 
