@@ -83,7 +83,7 @@ usersRouter.post("/login", async (req, res) => {
 //Get all users
 usersRouter.get("/", authMW("isAdmin"), async (req, res) => {
   allUsers = await User.find();
-  res.send(allUsers);
+  res.json(allUsers);
 });
 
 //Get User informaion by ID
@@ -167,7 +167,7 @@ usersRouter.delete("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
 usersRouter.delete("/deleteAll", async (req, res) => {
   await User.deleteMany();
   console.log(chalk.yellow("All users are deleted"));
-  res.json("All users are deleted");
+  res.json({ message: "All users are deleted" });
 });
 
 // server test

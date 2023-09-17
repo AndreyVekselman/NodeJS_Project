@@ -2,12 +2,32 @@ const cardsRouter = require("express").Router();
 const _ = require("lodash");
 const { Card, validateCard, generateBizNumber } = require("../models/cards");
 const authMW = require("../middlware/authMW");
+const chalk = require("chalk");
 
+//test routes
 cardsRouter.get("/test", async (req, res) => {
   res.json({ message: "hello from cards route" });
 });
 
-cardsRouter.post("/", authMW, async (req, res) => {
+//Delete All Cards
+cardsRouter.delete("/deleteAll", async (req, res) => {
+  await Card.deleteMany();
+  console.log(chalk.yellow("All cards are deleted"));
+  res.json({ message: "All cards are deleted" });
+});
+
+//Get ALl Cards
+cardsRouter.get("/", async (req, res) => {
+  allCards = await Card.find();
+  if (!allCards.length) {
+    res.json({ message: "no cards found" });
+    return;
+  }
+  res.json(allCards);
+});
+
+//create new Card
+cardsRouter.post("/", authMW(), async (req, res) => {
   //validate card input//
   const { error } = validateCard(req.body);
 
