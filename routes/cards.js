@@ -116,8 +116,16 @@ cardsRouter.patch("/:id", authMW(), async (req, res) => {
     res.status(401).json({ message: "card not found" });
     return;
   }
-  card.likes.push(req.user._id);
-  await card.save();
+  let allReadyLiked = false;
+  card.likes.forEach((e) => {
+    if (e._id == req.user._id) {
+      allReadyLiked = true;
+    }
+  });
+  if (!allReadyLiked) {
+    card.likes.push(req.user._id);
+    await card.save();
+  }
   res.json(card);
 });
 
