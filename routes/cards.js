@@ -19,11 +19,7 @@ cardsRouter.delete("/deleteAll", async (req, res) => {
 //Get ALl Cards
 cardsRouter.get("/", async (req, res) => {
   const allCards = await Card.find();
-  if (!allCards.length) {
-    res.status(401).json({ message: "no cards found" });
-    return;
-  }
-  res.json(allCards);
+    res.json(allCards);
 });
 
 //Create a new Card
@@ -62,12 +58,10 @@ cardsRouter.get("/:id", async (req, res) => {
     const card = await Card.findOne({
       _id: req.params.id,
     });
-    if (!card) {
-      res.status(401).json({ message: "card no found" });
-      return;
-    }
     res.json(card);
-  } catch (err) {
+    }
+    
+   catch (err) {
     res.status(401).json({ message: err.message });
     return;
   }
