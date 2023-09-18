@@ -53,11 +53,7 @@ cardsRouter.get("/my-cards", authMW(), async (req, res) => {
   const userCards = await Card.find({
     user_id: req.user._id,
   });
-  if (!userCards.length) {
-    res.status(401).json({ message: "user has no a cards" });
-    return;
-  }
-  res.json(userCards);
+   res.json(userCards);
 });
 
 // Get Card by ID
