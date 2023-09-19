@@ -18,6 +18,8 @@ const usersRouter = require("./routes/users");
 
 const cardsRouter = require("./routes/cards");
 
+const logger = require("./middlware/logger");
+
 mongoose
   .connect(config.get("mongoDB.MONGO_URI"))
   .then(() => console.log(chalk.green.bold("connected to db successfully")))
@@ -41,6 +43,9 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 app.use(express.static("public"));
 app.all("*", (req, res) => {
+  const err = new Error("Page not foud");
+  err.statusCode = 404;
+  logger(err);
   res.status(404).send("404: Page not found");
 });
 
