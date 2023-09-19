@@ -61,8 +61,9 @@ cardsRouter.get("/:id", async (req, res) => {
     });
     res.json(card);
   } catch (err) {
-    logger({ statusCode: 401, message: err.message });
-    res.status(401).json({ message: err.message });
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
     return;
   }
 });
@@ -86,14 +87,17 @@ cardsRouter.put("/:id", authMW(), async (req, res) => {
       }
     );
     if (!card) {
-      res
-        .status(401)
-        .json({ message: "the card with the given ID was not found" });
-      return;
+      const statusCode = 401;
+      const errMessage = "Card with the given ID not found";
+      logger(statusCode, errMessage);
+      // res.status(statusCode).json({ message: errMessage });
+      // return;
     }
-    res.json(card);
+    res.status(statusCode).json(card);
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
   }
 });
 
@@ -119,7 +123,9 @@ cardsRouter.patch("/:id", authMW(), async (req, res) => {
     }
     res.json(card);
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
   }
 });
 
