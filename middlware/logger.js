@@ -16,11 +16,13 @@ function fileLogger(status = 200, message = "No error") {
   }\n`;
 
   // Append the log message to the log file
-  fs.appendFile(logFilePath, logMessage, (appendErr) => {
-    if (appendErr) {
-      console.error("Error writing to log file:", appendErr);
-    }
-  });
+  if (status >= 400) {
+    fs.appendFile(logFilePath, logMessage, (appendErr) => {
+      if (appendErr) {
+        console.error("Error writing to log file:", appendErr);
+      }
+    });
+  }
 }
 
 module.exports = fileLogger;
