@@ -1,7 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-function fileLogger(err) {
+function fileLogger(status = 200, message = "No error") {
+  const err = new Error(message);
+  err.statusCode = status;
   // Get the current date
   const currentDate = new Date().toISOString().slice(0, 10);
 

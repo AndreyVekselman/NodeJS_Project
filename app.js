@@ -43,9 +43,7 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 app.use(express.static("public"));
 app.all("*", (req, res) => {
-  const err = new Error("Page not foud");
-  err.statusCode = 404;
-  logger(err);
+  logger(404, "Page not found");
   res.status(404).send("404: Page not found");
 });
 
