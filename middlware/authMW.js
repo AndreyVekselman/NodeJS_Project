@@ -7,9 +7,11 @@ function authMW(...roles) {
   return async (req, res, next) => {
     const token = req.header("x-auth-token");
     if (!token) {
-      res.statusMessage = "Access Denied. No token provided";
-      logger(401, "Access Denied. No token provide");
-      res.status(401).json({ message: "Access Denied. No token provided" });
+      const statusCode = 401;
+      const errMessage = "Access Denied. No token provided";
+      res.statusMessage = errMessage;
+      logger(statusCode, errMessage);
+      res.status(statusCode).json({ message: errMessage });
       return;
     }
 
@@ -29,47 +31,45 @@ function authMW(...roles) {
             user_id: req.user._id,
           });
           if (!card) {
-            logger(
-              401,
-              "Card Operation Failed. A Card with that ID was not found or you are not it's owner"
-            );
-            res.statusMessage =
-              "Card Operation Failed. A Card with that ID was not found or you are not it's owner";
-            res.status(401).json({
-              message:
-                "Card Operation Failed. A Card with that ID was not found or you are not it's owner",
+            const statusCode = 401;
+            const errMessage =
+              "Card with that ID was not found or you are not it's owner";
+            logger(statusCode, errMessage);
+            res.statusMessage = errMessage;
+            res.status(statusCode).json({
+              message: errMessage,
             });
             return;
           } else {
             next();
           }
         } catch (err) {
-          logger(401, "Error finding any card");
-          res.statusMessage("Error finding any card");
-          res.status(401).json({ message: "Error finding any card" });
+          const statusCode = 401;
+          const errMessage = "No card's founded";
+          logger(statusCode, errMessage);
+          res.statusMessage(errMessage);
+          res.status(statusCode).json({ message: errMessage });
           return;
         }
       } else if (roles.includes("isBusiness") && req.user.isBusiness) {
         next();
       } else {
-        logger(
-          400,
-          "Access Denied. User does not have the proper authorization"
-        );
-        res.statusMessage =
+        const statusCode = 400;
+        const errMessage =
           "Access Denied. User does not have the proper authorization";
-        res
-          .status(400)
-          .json({
-            message:
-              "Access Denied. User does not have the proper authorization",
-          });
+        logger(statusCode, errMessage);
+        res.statusMessage = errMessage;
+        res.status(statusCode).json({
+          message: errMessage,
+        });
         return;
       }
     } catch (err) {
-      logger(400, "Invalid Token");
-      res.statusMessage = "Invalid Token";
-      res.status(400).send("Invalid Token");
+      const statusCode = 400;
+      const errMessage = "Invalid Token";
+      logger(statusCode, errMessage);
+      res.statusMessage = errMessage;
+      res.status(statusCode).json({ message: errMessage });
       return;
     }
   };
