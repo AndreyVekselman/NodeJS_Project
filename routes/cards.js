@@ -122,18 +122,12 @@ cardsRouter.patch("/:id", authMW(), async (req, res) => {
 });
 
 //DELETE card by id
-cardsRouter.delete("/:id", authMW(), async (req, res) => {
+cardsRouter.delete("/:id", authMW("isAdmin", "cardOwner"), async (req, res) => {
   try {
     const card = await Card.findOneAndDelete({
       _id: req.params.id,
       user_id: req.user._id,
     });
-    if (!card) {
-      res
-        .status(404)
-        .json({ message: "the card with the given ID was not found" });
-      return;
-    }
     res.json(card);
   } catch (err) {
     res.status(401).json({ message: err.message });
