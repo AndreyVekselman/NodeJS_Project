@@ -126,7 +126,6 @@ cardsRouter.delete("/:id", authMW("isAdmin", "cardOwner"), async (req, res) => {
   try {
     const card = await Card.findOneAndDelete({
       _id: req.params.id,
-      user_id: req.user._id,
     });
     res.json(card);
   } catch (err) {
