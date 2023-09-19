@@ -43,8 +43,10 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 app.use(express.static("public"));
 app.all("*", (req, res) => {
-  logger(404, "Page not found");
-  res.status(404).send("404: Page not found");
+  const statusCode = 404;
+  const errMessage = "Page not found";
+  logger(statusCode, errMessage);
+  res.status(statusCode).json({ message: errMessage });
 });
 
 const PORT = config.get("server.PORT");

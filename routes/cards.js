@@ -3,6 +3,7 @@ const _ = require("lodash");
 const { Card, validateCard, generateBizNumber } = require("../models/cards");
 const authMW = require("../middlware/authMW");
 const chalk = require("chalk");
+const logger = require("../middlware/logger");
 
 //test routes
 cardsRouter.get("/test", async (req, res) => {
@@ -60,6 +61,7 @@ cardsRouter.get("/:id", async (req, res) => {
     });
     res.json(card);
   } catch (err) {
+    logger({ statusCode: 401, message: err.message });
     res.status(401).json({ message: err.message });
     return;
   }
