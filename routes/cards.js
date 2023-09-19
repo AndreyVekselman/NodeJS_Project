@@ -19,7 +19,7 @@ cardsRouter.delete("/deleteAll", async (req, res) => {
 //Get ALl Cards
 cardsRouter.get("/", async (req, res) => {
   const allCards = await Card.find();
-    res.json(allCards);
+  res.json(allCards);
 });
 
 //Create a new Card
@@ -49,7 +49,7 @@ cardsRouter.get("/my-cards", authMW(), async (req, res) => {
   const userCards = await Card.find({
     user_id: req.user._id,
   });
-   res.json(userCards);
+  res.json(userCards);
 });
 
 // Get Card by ID
@@ -59,9 +59,7 @@ cardsRouter.get("/:id", async (req, res) => {
       _id: req.params.id,
     });
     res.json(card);
-    }
-    
-   catch (err) {
+  } catch (err) {
     res.status(401).json({ message: err.message });
     return;
   }
@@ -104,7 +102,7 @@ cardsRouter.patch("/:id", authMW(), async (req, res) => {
       _id: req.params.id,
     });
     if (!card) {
-      res.status(401).json({ message: "card not found" });
+      res.json(card);
       return;
     }
     let allReadyLiked = false;
