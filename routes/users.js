@@ -171,7 +171,7 @@ usersRouter.delete("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
 });
 
 // My Games-----------
-usersRouter.delete("/deleteAll", async (req, res) => {
+usersRouter.delete("/delete/deleteAll", async (req, res) => {
   await User.deleteMany();
   console.log(chalk.yellow("All users are deleted"));
   res.json({ message: "All users are deleted" });
@@ -185,7 +185,7 @@ usersRouter.get("/test/test", (req, res) => {
 //
 function validate(user) {
   const schema = Joi.object({
-    email: Joi.string().min(6).max(255).required().email(),
+    email: Joi.string().min(6).max(255).required().email({ tlds: false }),
     password: Joi.string().min(6).max(1024).required(),
   });
 
