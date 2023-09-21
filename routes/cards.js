@@ -156,4 +156,28 @@ cardsRouter.delete("/:id", authMW("isAdmin", "cardOwner"), async (req, res) => {
   }
 });
 
+//Change bizNumber of Card by Admin
+cardsRouter.patch("/bizUpdate/:id", authMW("isAdmin"), async (req, res) => {
+  try {
+    const card = await Card.findOne({
+      _id: req.params.id,
+    });
+    if (!card) {
+      res.json(card);
+      return;
+    }
+    if (card.bizNumber == req.body.bizNumber) {
+      res.json(card);
+      return;
+    }
+    card.bizNumber = req.body.bizNumber;
+    await card.save();
+    res.json(card);
+  } catch (err) {
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
+  }
+});
+
 module.exports = cardsRouter;
