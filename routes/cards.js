@@ -166,7 +166,10 @@ cardsRouter.patch("/bizUpdate/:id", authMW("isAdmin"), async (req, res) => {
       res.json(card);
       return;
     }
-    if (card.bizNumber == req.body.bizNumber) {
+    const userWithSameBizNumber = await Card.findOne({
+      bizNumber: req.body.bizNumber,
+    });
+    if(userWithSameBizNumber){
       res.json(card);
       return;
     }
