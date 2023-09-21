@@ -34,7 +34,7 @@ cardsRouter.post("/", authMW("isBusiness"), async (req, res) => {
   //validate card input//
   const { error } = validateCard(req.body);
   if (error) {
-    error.statusCode = 401;
+    error.statusCode = 400;
     logger(error.statusCode, error.details[0].message);
     res.status(error.statusCode).json(error.details[0].message);
     return;

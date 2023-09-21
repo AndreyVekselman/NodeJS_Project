@@ -5,6 +5,7 @@ const _ = require("lodash");
 const Joi = require("joi");
 
 const { User, validateUser } = require("../models/users");
+const logger = require("../middlware/logger");
 
 const authMW = require("../middlware/authMW");
 const chalk = require("chalk");
@@ -15,13 +16,18 @@ usersRouter.post("/", async (req, res) => {
   //validate user input
   const { error } = validateUser(req.body);
   if (error) {
-    res.status(400).json(error.details[0].message);
-    return;
+    error.statusCode = 400;
+    logger(error.statusCode, error.details[0].message);
+    res.status(error.statusCode).json({ message: error.details[0].message });
   }
   //validate system
   let user = await User.findOne({ email: req.body.email });
   if (user) {
-    res.status(400).json({ message: "User already registered" });
+    const err = new Error("User already registered");
+    err.statusCode = 400;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
+
     return;
   }
   //process
@@ -37,12 +43,17 @@ usersRouter.post("/", async (req, res) => {
 usersRouter.post("/login", async (req, res) => {
   const { error } = validate(req.body);
   if (error) {
-    res.status(400).json(error.details[0].message);
+    error.statusCode = 400;
+    logger(error.statusCode, error.details[0].message);
+    res.status(error.statusCode).json({ message: error.details[0].message });
     return;
   }
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    res.status(400).json({ message: "Invalid email or password!!" });
+    const err = new Error("Invalid email or password!!");
+    err.statusCode = 400;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
     return;
   }
 
@@ -52,7 +63,10 @@ usersRouter.post("/login", async (req, res) => {
   );
 
   if (!isPasswordValid) {
-    res.status(400).json({ message: "Invalid email or password!!" });
+    const err = new Error("Invalid email or password!!");
+    err.statusCode = 400;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
     return;
   }
   //process
@@ -70,22 +84,26 @@ usersRouter.get("/", authMW("isAdmin"), async (req, res) => {
 
 //Get User informaion by ID
 usersRouter.get("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
-  const user = await User.findOne({ _id: req.params.id }).select(
-    "-password -__v"
-  );
-  if (!user) {
-    res.status(401).json({ message: "user Not found" });
-    return;
+  try {
+    const user = await User.findOne({ _id: req.params.id }).select(
+      "-password -__v"
+    );
+    res.json(user);
+  } catch (err) {
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
   }
-  res.json(user);
 });
 
-//Edit user
+//Edit Existin user
 usersRouter.put("/:id", authMW("userOwner"), async (req, res) => {
   //validate user input
   const { error } = validateUser(req.body);
   if (error) {
-    res.status(400).json(error.details[0].message);
+    error.statusCode = 400;
+    logger(error.statusCode, error.details[0].message);
+    res.status(error.statusCode).json({ message: error.details[0].message });
     return;
   }
   //validate system
@@ -94,7 +112,10 @@ usersRouter.put("/:id", authMW("userOwner"), async (req, res) => {
     _id: { $ne: req.user._id },
   });
   if (user) {
-    res.status(401).json({ message: "This Email all ready in use" });
+    const err = new Error("This Email all ready in use");
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
     return;
   }
   //process
@@ -104,10 +125,6 @@ usersRouter.put("/:id", authMW("userOwner"), async (req, res) => {
     { new: true }
   );
   //response
-  if (!user) {
-    res.status(401).json({ message: "user Not found" });
-    return;
-  }
   res.json(
     _.pick(user, ["_id", "name", "email", "isBusiness", "isAdmin", "address"])
   );
@@ -120,13 +137,19 @@ usersRouter.patch("/:id", authMW("userOwner"), async (req, res) => {
     _id: { $ne: req.user._id },
   });
   if (user) {
-    res.status(401).json({ message: "wrong user parameters" });
+    const err = new Error("wrong user parameters");
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
     return;
   }
   //process
   user = await User.findOne({ _id: req.params.id });
   if (!user) {
-    res.status(401).json({ message: "user Not found" });
+    const err = new Error("user Not found");
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
     return;
   }
   user.isBusiness = !user.isBusiness;
@@ -137,15 +160,17 @@ usersRouter.patch("/:id", authMW("userOwner"), async (req, res) => {
 
 //Delete User by ID
 usersRouter.delete("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
-  const user = await User.findOneAndRemove({ _id: req.params.id });
-  if (!user) {
-    res.status(401).json({ message: "user Not found" });
-    return;
+  try {
+    const user = await User.findOneAndRemove({ _id: req.params.id });
+    res.json(user);
+  } catch (err) {
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
   }
-  res.json(user);
 });
 
-// My Games
+// My Games-----------
 usersRouter.delete("/deleteAll", async (req, res) => {
   await User.deleteMany();
   console.log(chalk.yellow("All users are deleted"));
