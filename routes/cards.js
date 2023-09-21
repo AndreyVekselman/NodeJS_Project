@@ -86,14 +86,8 @@ cardsRouter.put("/:id", authMW(), async (req, res) => {
         new: true,
       }
     );
-    if (!card) {
-      const statusCode = 401;
-      const errMessage = "Card with the given ID not found";
-      logger(statusCode, errMessage);
-      // res.status(statusCode).json({ message: errMessage });
-      // return;
-    }
-    res.status(statusCode).json(card);
+    
+    res.json(card);
   } catch (err) {
     err.statusCode = 401;
     logger(err.statusCode, err.message);
