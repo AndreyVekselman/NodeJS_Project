@@ -17,10 +17,16 @@ cardsRouter.delete("/deleteAll", async (req, res) => {
   res.json({ message: "All cards are deleted" });
 });
 
-//Get ALl Cards
+//Get All Cards
 cardsRouter.get("/", async (req, res) => {
-  const allCards = await Card.find();
-  res.json(allCards);
+  try {
+    const allCards = await Card.find();
+    res.json(allCards);
+  } catch (err) {
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
+  }
 });
 
 //Create a new Card
@@ -28,29 +34,41 @@ cardsRouter.post("/", authMW("isBusiness"), async (req, res) => {
   //validate card input//
   const { error } = validateCard(req.body);
   if (error) {
-    res.status(401).json(error.details[0].message);
+    error.statusCode = 401;
+    logger(error.statusCode, error.details[0].message);
+    res.status(error.statusCode).json(error.details[0].message);
     return;
   }
 
   //process//
-  const card = new Card({
-    ...req.body,
-    bizNumber: await generateBizNumber(),
-    user_id: req.user._id,
-  });
-
-  await card.save();
-
-  //response//
-  res.json(card);
+  try {
+    const card = new Card({
+      ...req.body,
+      bizNumber: await generateBizNumber(),
+      user_id: req.user._id,
+    });
+    await card.save();
+    //response//
+    res.json(card);
+  } catch (err) {
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
+  }
 });
 
 //Get user Cards
 cardsRouter.get("/my-cards", authMW(), async (req, res) => {
-  const userCards = await Card.find({
-    user_id: req.user._id,
-  });
-  res.json(userCards);
+  try {
+    const userCards = await Card.find({
+      user_id: req.user._id,
+    });
+    res.json(userCards);
+  } catch (err) {
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
+  }
 });
 
 // Get Card by ID
@@ -64,7 +82,6 @@ cardsRouter.get("/:id", async (req, res) => {
     err.statusCode = 401;
     logger(err.statusCode, err.message);
     res.status(err.statusCode).json({ message: err.message });
-    return;
   }
 });
 
@@ -72,7 +89,9 @@ cardsRouter.get("/:id", async (req, res) => {
 cardsRouter.put("/:id", authMW(), async (req, res) => {
   const { error } = validateCard(req.body);
   if (error) {
-    res.status(401).json(error.details[0].message);
+    error.statusCode = 401;
+    logger(error.statusCode, error.details[0].message);
+    res.status(error.statusCode).json(error.details[0].message);
     return;
   }
   try {
@@ -86,7 +105,7 @@ cardsRouter.put("/:id", authMW(), async (req, res) => {
         new: true,
       }
     );
-    
+
     res.json(card);
   } catch (err) {
     err.statusCode = 401;
@@ -131,7 +150,9 @@ cardsRouter.delete("/:id", authMW("isAdmin", "cardOwner"), async (req, res) => {
     });
     res.json(card);
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    err.statusCode = 401;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
   }
 });
 
