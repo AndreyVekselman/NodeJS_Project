@@ -122,6 +122,14 @@ const usersSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  attempts: {
+    type: Number,
+    default: 0,
+  },
+  nextAttempt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 usersSchema.methods.generateAuthToken = function () {
@@ -165,6 +173,8 @@ function validateUser(user) {
     }).required(),
     isBusiness: Joi.boolean().required(),
     isAdmin: Joi.boolean().required(),
+    // attemps: Joi.number,
+    // nextAttempt: Joi.date,
   });
 
   return schema.validate(user);

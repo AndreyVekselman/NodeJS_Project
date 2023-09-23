@@ -6,6 +6,7 @@ const Joi = require("joi");
 
 const { User, validateUser } = require("../models/users");
 const logger = require("../middlware/logger");
+const userBlock = require("../middlware/userBlock");
 
 const authMW = require("../middlware/authMW");
 const chalk = require("chalk");
@@ -61,7 +62,16 @@ usersRouter.post("/login", async (req, res) => {
     req.body.password,
     user.password
   );
-
+  //-------------
+  const isBlocked = userBlock(isPasswordValid, user);
+  if (isBlocked) {
+    const err = new Error("user blocked");
+    err.statusCode = 500;
+    logger(err.statusCode, err.message);
+    res.status(err.statusCode).json({ message: err.message });
+    return;
+  }
+  //---------------
   if (!isPasswordValid) {
     const err = new Error("Invalid email or password!!");
     err.statusCode = 400;
