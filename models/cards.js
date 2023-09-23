@@ -73,7 +73,7 @@ const cardsSchema = new mongoose.Schema({
     },
     city: {
       type: String,
-      minlength: 6,
+      minlength: 5,
       maxlength: 255,
       required: true,
     },
@@ -141,7 +141,7 @@ function validateCard(card) {
     address: Joi.object({
       state: Joi.string().allow(""),
       country: Joi.string().min(3).max(255).required(),
-      city: Joi.string().min(6).max(255).required(),
+      city: Joi.string().min(5).max(255).required(),
       street: Joi.string().min(3).max(255).required(),
       houseNumber: Joi.string().min(1).max(10).required(),
       zip: Joi.string().min(0).max(12),

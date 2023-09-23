@@ -27,7 +27,7 @@ async function seed() {
   for (let j = 0; j < cardsData.length; j++) {
     await createCard({
       ...cardsData[j],
-      "user_id": user._id,
+      user_id: user._id,
     });
   }
 
@@ -41,7 +41,7 @@ async function seed() {
 async function seedUser(userData) {
   const user = await new User({
     ...userData,
-    "password": await bcrypt.hash(userData.password, 12),
+    password: await bcrypt.hash(userData.password, 12),
   }).save();
 
   console.log(chalk.white.bgBlue(`New User: ${userData.email}`));
