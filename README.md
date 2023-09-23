@@ -3,7 +3,12 @@
 
 Server-side development for a web application that includes a website management system that allows business users publish content, edit and delete it.
 
-
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage/Examples)
+- [Features](#features)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
