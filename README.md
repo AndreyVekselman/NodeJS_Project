@@ -45,7 +45,7 @@ npm run seed-db
 
 This will create a three users and three cards in database.
 
-To continue using a server application, from terminal run:
+Then from terminal run:
 
 ```
 npm run dev
@@ -57,14 +57,15 @@ or
 npm run start
 ```
 
-Create a example.http file or use application like a Postman to test a server, create a users with different access levels,login users, edit users and delete user.
+to continue using a server application.
+
+Create a example.http file or use application like a Postman to test a server, create a users with with different access levels, edit users and delete user.
 
 ### Test
 
 To test Users Router send next following command from http file or from Postman (test route designed for educational purposes only and will not be used in real conditions):
 
 ```
-### Test
 GET {{local}}/users/test/test
 ```
 
@@ -74,7 +75,6 @@ To delete All users send next following command from http file or from Postman (
 Be carefull. This command will delete all users from database.
 
 ```
-### Delete ALL Users
 DELETE {{local}}/users/delete/deleteAll
 ```
 
@@ -85,21 +85,17 @@ Please note: when creating a new user, the data must meet the necessary requirem
 
 Here are the requirements that the data must meet when creating a new user:
 
-    first Name:minimum 2 characters;
-    last Name: minimum 2 characters;
-
-    phone: minimum 9 and maximum 10 numbers, must begin from 0, second number from 2 to 9;
-
-    email: minimum 6 characters, must be a valid email;
-
-    country: minimum 3 characters;
-    city: minimum 5 characters;
-    street: minimum 3 characters;
-    houseNumber: minimum 1 number;
-
+- first Name:minimum 2 characters;
+- last Name: minimum 2 characters;
+- phone: minimum 9 and maximum 10 numbers, must begin from 0, second number from 2 to 9;
+- email: minimum 6 characters, must be a valid email;
+- password: minimum 6 characters;
+- country: minimum 3 characters;
+- city: minimum 5 characters;
+- street: minimum 3 characters;
+- houseNumber: minimum 1 number;
 
 ```
-### Create a New User
 POST {{local}}/users
 Content-Type: application/json
 
@@ -123,57 +119,120 @@ Content-Type: application/json
   }
 ```
 
-### login
+### Login
 
+To Login User send next following command from http file or from Postman.
+Please note: when login a user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be login and the corresponding error will be displayed in response.
+
+Here are the requirements that the data must meet when creating a new user:
+
+- email: minimum 6 characters, must be a valid email;
+- password: minimum 6 characters;
+
+When the user login is successful, you will receive a token.
+Save the token; you will need it for further operations with users.
+
+```
 POST {{local}}/users/login
 Content-Type: application/json
 
 {
-"email":"aleks@mail.com",
-"password":"aB123123$"
+ "email":"aleks@mail.com",
+  "password":"aB123123$"
 }
+```
 
-### get allUsers
+### Get all Users
 
+To get list (array) of all Users send next following command from http file or from Postman.
+Please note: get all users is only possible for users with admin privileges. Use admin token recieved during Login
+
+```
 GET {{local}}/users/
 x-auth-token: {{tokenAdmin}}
+```
 
-### get user information by id
+### Get user information by id
 
+To get information about specific User(use User ID), send next following command from http file or from Postman.
+Please note: get users information is only possible for users with admin privileges. Use admin token recieved during Login
+
+```
 GET {{local}}/users/650c6d9d575fc658bd6a0fbc
 x-auth-token: {{tokenAdmin}}
+```
 
 ### Update existing user
 
-PUT {{local}}/users/650c6d9d575fc658bd6a0fbc
+To update existing User send next following command from http file or from Postman.
+
+##### Please note:
+
+1. use a User ID to update the User information;
+2. use a token recieved during Login;
+3. when updating existing user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be created and the corresponding error will be displayed in response.
+   Here are the requirements that the data must meet when creating a new user:
+
+- first Name:minimum 2 characters;
+- last Name: minimum 2 characters;
+- phone: minimum 9 and maximum 10 numbers, must begin from 0, second number from 2 to 9;
+- email: minimum 6 characters, must be a valid email;
+- password: minimum 6 characters;
+- country: minimum 3 characters;
+- city: minimum 5 characters;
+- street: minimum 3 characters;
+- houseNumber: minimum 1 number;
+
+```
+PUT  {{local}}/users/650c6d9d575fc658bd6a0fbc
 Content-Type: application/json
 x-auth-token: {{tokenAdmin}}
 
 {
-"name": {
-"first": "Shir",
-"last": "Alim"
-},
-"phone": "0502222299",
-"email": "shor@gmail.com",
-"password": "Aa123456&",
-"isBusiness": false,
-"isAdmin": false,
-"address": {
-"state": "Israel",
-"country": "Israel",
-"city": "Los Angeles",
-"street": "Main Street",
-"houseNumber": "10"
-}
-}
+    "name": {
+      "first": "Shir",
+      "last": "Alim"
+    },
+    "phone": "0502222299",
+    "email": "shor@gmail.com",
+    "password": "Aa123456&",
+    "isBusiness": false,
+    "isAdmin": false,
+    "address": {
+      "state": "Israel",
+      "country": "Israel",
+      "city": "Los Angeles",
+      "street": "Main Street",
+      "houseNumber": "10"
+    }
+  }
+```
 
 ### Update Business status
 
+To update a User Business status send next following command from http file or from Postman.
+
+##### Please note:
+
+1. use a User ID to update the User information;
+2. use a token recieved during Login;
+
+```
 PATCH {{local}}/users/650c6d9d575fc658bd6a0fbc
 x-auth-token: {{token}}
+```
 
 ### Delete user by ID
 
+To update a User Business status send next following command from http file or from Postman.
+
+##### Please note:
+
+1. use a User ID to update the User information;
+2. use a token recieved during Login;
+3. delete user possible by user itself or by user with admin privileges.
+
+```
 DELETE {{local}}/users/6505bd009c56b9a7e6e49461
 x-auth-token: {{tokenBiz}}
+```
