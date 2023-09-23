@@ -81,8 +81,7 @@ DELETE {{local}}/users/delete/deleteAll
 ### Create a New User
 
 To create a new User send next following command from http file or from Postman.
-Please note: when creating a new user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be created and the corresponding error will be displayed in response.
-
+Please note: when creating a new user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be created and the corresponding error will be displayed in response.  
 Here are the requirements that the data must meet when creating a new user:
 
 - first Name:minimum 2 characters;
@@ -121,16 +120,20 @@ Content-Type: application/json
 
 ### Login
 
-To Login User send next following command from http file or from Postman.
-Please note: when login a user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be login and the corresponding error will be displayed in response.
+To Login User send next following command from http file or from Postman.  
+Please note:
 
-Here are the requirements that the data must meet when creating a new user:
+- when login a user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be login and the corresponding error will be displayed in response.  
+  Here are the requirements that the data must meet when creating a new user:
 
-- email: minimum 6 characters, must be a valid email;
-- password: minimum 6 characters;
+* email: minimum 6 characters, must be a valid email;
+* password: minimum 6 characters;
 
 When the user login is successful, you will receive a token.
-Save the token; you will need it for further operations with users.
+Save the token, you will need it for further operations with users.  
+Please note:
+
+- A user who tried to log in three times in a row using the same email but with an incorrect password will blocked for 24 hours.
 
 ```
 POST {{local}}/users/login
@@ -144,8 +147,10 @@ Content-Type: application/json
 
 ### Get all Users
 
-To get list (array) of all Users send next following command from http file or from Postman.
-Please note: get all users is only possible for users with admin privileges. Use admin token recieved during Login
+To get list (array) of all Users send next following command from http file or from Postman.  
+Please note:
+
+- get all users is only possible for users with admin privileges. Use admin token recieved during Login
 
 ```
 GET {{local}}/users/
@@ -154,8 +159,10 @@ x-auth-token: {{tokenAdmin}}
 
 ### Get user information by id
 
-To get information about specific User(use User ID), send next following command from http file or from Postman.
-Please note: get users information is only possible for users with admin privileges. Use admin token recieved during Login
+To get information about specific User(use User ID), send next following command from http file or from Postman.  
+Please note:
+
+- get users information is only possible for users with admin privileges. Use admin token recieved during Login
 
 ```
 GET {{local}}/users/650c6d9d575fc658bd6a0fbc
@@ -164,24 +171,23 @@ x-auth-token: {{tokenAdmin}}
 
 ### Update existing user
 
-To update existing User send next following command from http file or from Postman.
+To update existing User send next following command from http file or from Postman.  
+Please note:
 
-##### Please note:
+- use a User ID to update the User information;
+- use a token recieved during Login;
+- when updating existing user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be created and the corresponding error will be displayed in response.
+  Here are the requirements that the data must meet when creating a new user:
 
-1. use a User ID to update the User information;
-2. use a token recieved during Login;
-3. when updating existing user, the data must meet the necessary requirements. If the entered data does not meet the requirements, the user will not be created and the corresponding error will be displayed in response.
-   Here are the requirements that the data must meet when creating a new user:
-
-- first Name:minimum 2 characters;
-- last Name: minimum 2 characters;
-- phone: minimum 9 and maximum 10 numbers, must begin from 0, second number from 2 to 9;
-- email: minimum 6 characters, must be a valid email;
-- password: minimum 6 characters;
-- country: minimum 3 characters;
-- city: minimum 5 characters;
-- street: minimum 3 characters;
-- houseNumber: minimum 1 number;
+* first Name:minimum 2 characters;
+* last Name: minimum 2 characters;
+* phone: minimum 9 and maximum 10 numbers, must begin from 0, second number from 2 to 9;
+* email: minimum 6 characters, must be a valid email;
+* password: minimum 6 characters;
+* country: minimum 3 characters;
+* city: minimum 5 characters;
+* street: minimum 3 characters;
+* houseNumber: minimum 1 number;
 
 ```
 PUT  {{local}}/users/650c6d9d575fc658bd6a0fbc
@@ -210,12 +216,11 @@ x-auth-token: {{tokenAdmin}}
 
 ### Update Business status
 
-To update a User Business status send next following command from http file or from Postman.
+To update a User Business status send next following command from http file or from Postman.  
+Please note:
 
-##### Please note:
-
-1. use a User ID to update the User information;
-2. use a token recieved during Login;
+- use a User ID to update the User information;
+- use a token recieved during Login;
 
 ```
 PATCH {{local}}/users/650c6d9d575fc658bd6a0fbc
@@ -224,13 +229,12 @@ x-auth-token: {{token}}
 
 ### Delete user by ID
 
-To update a User Business status send next following command from http file or from Postman.
+To update a User Business status send next following command from http file or from Postman.  
+Please note:
 
-##### Please note:
-
-1. use a User ID to update the User information;
-2. use a token recieved during Login;
-3. delete user possible by user itself or by user with admin privileges.
+- use a User ID to update the User information;
+- use a token recieved during Login;
+- delete user possible by user itself or by user with admin privileges.
 
 ```
 DELETE {{local}}/users/6505bd009c56b9a7e6e49461
