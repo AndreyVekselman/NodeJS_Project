@@ -23,17 +23,28 @@ For proper application operation Install the next following modules:
 "jsonwebtoken",
 "lodash",
 "mongoose",
-"morgan"
+"morgan".
+
+MongoDB compass application must to be installed on your PC also.
 
 ## Usage/Examples
 
-To start using application from terminal run:
+To start using server application create a .env file (file not include in GitHub) similar like a .env.example file:
+
+```
+MONGO_URI=mongodb://127.0.01/my_rest_api_Project
+PORT=3000
+JWT_SECRET=SECRET
+```
+
+Then from terminal run:
 
 ```
 npm run seed-db
 ```
 
 This will create a three users and three cards in database.
+
 Then from terminal run:
 
 ```
