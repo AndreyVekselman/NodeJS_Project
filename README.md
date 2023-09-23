@@ -236,3 +236,26 @@ To update a User Business status send next following command from http file or f
 DELETE {{local}}/users/6505bd009c56b9a7e6e49461
 x-auth-token: {{tokenBiz}}
 ```
+
+## Features
+
+- Register(create) a new User
+- Login user
+- Get All Users
+- Get User information
+- Edit existing User
+- Change User business status
+- Delete existing User
+- Test a Users Router
+- Delete all Users
+- Create a new Card
+- Get All Cards
+- Get User Cards
+- Get a specific Card information
+- Edit a specific Card
+- Like a specific Card
+- Delete a specific Card
+- Change a Card bizNumber
+- Delete all Cards
+- File logger
+- Blocking a User for 24 hours
