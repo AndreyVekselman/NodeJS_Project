@@ -6,9 +6,10 @@ Server-side development for a web application that includes a website management
 
 - [Features](#features)
 - [Installation](#installation)
-- [Usage/Examples](#usage/examples)
+- [Usage/Examples](#usageexamples)
 - [Contributing](#contributing)
 - [License](#license)
+- [Contacts](#contact)
 
 ## Features
 
