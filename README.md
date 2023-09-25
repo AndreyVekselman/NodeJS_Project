@@ -9,7 +9,7 @@ Server-side development for a web application that includes a website management
 - [Usage/Examples](#usageexamples)
 - [Contributing](#contributing)
 - [License](#license)
-- [Contacts](#contact)
+- [Contact](#contact)
 
 ## Features
 
