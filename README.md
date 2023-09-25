@@ -460,7 +460,7 @@ GET {{local}}/hello.html
 
 ## Contributing
 
-Contributions to the Node.js module summary project are welcome! If you have any bug reports, feature requests, or suggestions, please submit them through the GitHub Issues page.
+Contributions to the **Node.js module summary project** are welcome! If you have any bug reports, feature requests, or suggestions, please submit them through the GitHub Issues page.
 If you'd like to contribute code to the project, please follow these steps:
 
 - Fork the repository on GitHub.
