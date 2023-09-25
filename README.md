@@ -4,11 +4,35 @@ Server-side development for a web application that includes a website management
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage/Examples](#Usage/Examples)
 - [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Features
+
+- Register(create) a new User
+- Login user
+- Get All Users
+- Get User information
+- Edit existing User
+- Change User business status
+- Delete existing User
+- Test a Users Router
+- Delete all Users
+- Create a new Card
+- Get All Cards
+- Get User Cards
+- Get a specific Card information
+- Edit a specific Card
+- Like a specific Card
+- Delete a specific Card
+- Change a Card bizNumber
+- Delete all Cards
+- File logger
+- Blocking a User for 24 hours
+- Show static HTML page
 
 ## Installation
 
@@ -433,26 +457,28 @@ Show static HTML page by send command from http file or from Postman.
 GET {{local}}/hello.html
 ```
 
-## Features
+## Contributing
 
-- Register(create) a new User
-- Login user
-- Get All Users
-- Get User information
-- Edit existing User
-- Change User business status
-- Delete existing User
-- Test a Users Router
-- Delete all Users
-- Create a new Card
-- Get All Cards
-- Get User Cards
-- Get a specific Card information
-- Edit a specific Card
-- Like a specific Card
-- Delete a specific Card
-- Change a Card bizNumber
-- Delete all Cards
-- File logger
-- Blocking a User for 24 hours
-- Show static HTML page
+Contributions to the Node.js module summary project are welcome! If you have any bug reports, feature requests, or suggestions, please submit them through the GitHub Issues page.
+If you'd like to contribute code to the project, please follow these steps:
+
+- Fork the repository on GitHub.
+- Create a new branch from the `first` branch to work on your changes.
+- Make your modifications, adding new features or fixing bugs.
+- Test your changes thoroughly.
+- Commit your changes with descriptive commit messages.
+- Push your branch to your forked repository.
+- Submit a pull request to the `first` branch of the main repository.
+  The project maintainers will review your contribution and provide feedback.
+
+## License
+
+This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/)
+
+## Contact
+
+If you have any questions, suggestions, or feedback, feel free to reach out:
+
+Email: andrey.vekselman@gmail.com  
+GitHub: [Andrey Vekselman](https://github.com/AndreyVekselman)  
+Your feedback is valuable and greatly appreciated!
