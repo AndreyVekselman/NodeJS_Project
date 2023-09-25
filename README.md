@@ -464,12 +464,12 @@ Contributions to the Node.js module summary project are welcome! If you have any
 If you'd like to contribute code to the project, please follow these steps:
 
 - Fork the repository on GitHub.
-- Create a new branch from the `first` branch to work on your changes.
+- Create a new branch from the **`first`** branch to work on your changes.
 - Make your modifications, adding new features or fixing bugs.
 - Test your changes thoroughly.
 - Commit your changes with descriptive commit messages.
 - Push your branch to your forked repository.
-- Submit a pull request to the `first` branch of the main repository.
+- Submit a pull request to the **`first`** branch of the main repository.
   The project maintainers will review your contribution and provide feedback.
 
 ## License
