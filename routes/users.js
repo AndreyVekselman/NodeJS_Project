@@ -183,7 +183,7 @@ usersRouter.delete("/:id", authMW("isAdmin", "userOwner"), async (req, res) => {
 // My Games-----------
 usersRouter.delete("/delete/deleteAll", async (req, res) => {
   await User.deleteMany();
-  console.log(chalk.yellow("All users are deleted"));
+  console.log(chalk.red("All users are deleted"));
   res.json({ message: "All users are deleted" });
 });
 
